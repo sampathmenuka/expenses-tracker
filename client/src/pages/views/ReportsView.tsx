@@ -155,7 +155,9 @@ export function ReportsView({
                       fontSize: 9,
                       fontFamily: "IBM Plex Mono",
                     }}
-                    tickFormatter={(value) => `$${value}`}
+                    tickFormatter={(value) =>
+                      value >= 1000 ? `${(value / 1000).toFixed(0)}k` : `${value}`
+                    }
                   />
                   <RechartsTooltip
                     cursor={{ fill: "#f0eadf" }}

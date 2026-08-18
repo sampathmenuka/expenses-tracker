@@ -132,10 +132,10 @@ export function TodayView({
                 }
               />
             </div>
-            <div className="field-stack">
+            <div className="field-stack field-amount">
               <label htmlFor="expense-amount">Amount</label>
               <div className="input-shell">
-                <span className="money-prefix">$</span>
+                <span className="money-prefix">Rs.</span>
                 <input
                   id="expense-amount"
                   className="ledger-input amount-input"

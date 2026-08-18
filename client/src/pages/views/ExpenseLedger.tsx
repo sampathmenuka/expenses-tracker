@@ -33,7 +33,7 @@ export function ExpenseLedger({
           <h3 className="m-0 mt-1 mb-1 text-[#154734] font-serif text-xl font-bold tracking-tight">
             The ledger is waiting.
           </h3>
-          <p className="m-0 max-w-[270px] text-[#748077] text-xs leading-relaxed">
+          <p className="m-0 max-w-[270px] text-[#3c5043] text-xs leading-relaxed font-medium">
             Start with the first thing you spent today. Your totals and reports
             update right away.
           </p>
@@ -45,7 +45,7 @@ export function ExpenseLedger({
   return (
     <div className="overflow-hidden rounded-2xl border border-[#a08e73]/25 bg-[#fffdf8]/85 shadow-sm">
       {/* Header */}
-      <div className="hidden sm:grid grid-cols-[1fr_120px_100px_42px] items-center gap-3 px-5 py-3 bg-[#f0eadf] text-[#738078] font-mono text-[9px] uppercase tracking-wider">
+      <div className="hidden sm:grid grid-cols-[1fr_120px_100px_42px] items-center gap-3 px-5 py-3 bg-[#ebe4d5] text-[#2c3d31] font-mono text-[9px] font-bold uppercase tracking-wider">
         <span>Expense</span>
         <span>Type</span>
         <span>Date</span>
@@ -70,22 +70,22 @@ export function ExpenseLedger({
                   className="grid place-items-center shrink-0 w-8 h-8 rounded-xl [&_svg]:w-4 [&_svg]:h-4"
                 />
                 <div className="min-w-0">
-                  <strong className="block text-[#244336] text-xs font-bold truncate">
+                  <strong className="block text-[#18342a] text-xs font-bold truncate">
                     {expense.title}
                   </strong>
-                  <span className="block mt-0.5 text-[#829087] font-mono text-[10px] sm:hidden">
+                  <span className="block mt-0.5 text-[#3c5043] font-mono text-[10px] sm:hidden font-medium">
                     {formatCurrency(expense.amount)}
                   </span>
                 </div>
               </div>
 
               {/* Category */}
-              <span className="hidden sm:block text-[#52675a] text-xs font-bold truncate">
+              <span className="hidden sm:block text-[#2c3d31] text-xs font-bold truncate">
                 {category.name}
               </span>
 
               {/* Date */}
-              <span className="hidden sm:block text-[#829087] text-[10px] font-mono">
+              <span className="hidden sm:block text-[#3c5043] text-[10px] font-mono font-medium">
                 {formatShortDate(fromKey(expense.date))}
               </span>
 
@@ -98,13 +98,13 @@ export function ExpenseLedger({
                 {deleting ? (
                   <span className="flex items-center gap-1.5 whitespace-nowrap">
                     <button
-                      className="px-2 py-1 rounded-md bg-[#ece7dc] text-[#6d786f] text-[10px] font-bold"
+                      className="px-2 py-1 rounded-md bg-[#ece7dc] text-[#2c3d31] text-[10px] font-bold cursor-pointer"
                       onClick={() => onRequestDelete(null)}
                     >
                       Keep
                     </button>
                     <button
-                      className="px-2 py-1 rounded-md bg-[#f4dfd8] text-[#9f482f] text-[10px] font-bold"
+                      className="px-2 py-1 rounded-md bg-[#f4dfd8] text-[#9f482f] text-[10px] font-bold cursor-pointer"
                       onClick={() => onRemove(expense.id)}
                     >
                       Remove
@@ -112,7 +112,7 @@ export function ExpenseLedger({
                   </span>
                 ) : (
                   <button
-                    className="w-7 h-7 grid place-items-center rounded-lg text-[#a0786b] hover:text-[#ad4a37] hover:bg-[#fae9e4] transition-all opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100"
+                    className="w-7 h-7 grid place-items-center rounded-lg text-[#825e53] hover:text-[#ad4a37] hover:bg-[#fae9e4] transition-all opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 cursor-pointer"
                     onClick={() => onRequestDelete(expense.id)}
                     aria-label={`Delete ${expense.title}`}
                   >

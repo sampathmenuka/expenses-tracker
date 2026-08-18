@@ -43,7 +43,7 @@ export function CategoryDialog({
       >
         <div className="flex justify-between items-start gap-3 mb-5">
           <div>
-            <span className="text-[#6e8075] text-[9px] font-mono font-semibold uppercase tracking-wider">
+            <span className="text-[#3c5043] text-[9px] font-mono font-semibold uppercase tracking-wider">
               Make it yours
             </span>
             <h2
@@ -54,7 +54,7 @@ export function CategoryDialog({
             </h2>
           </div>
           <button
-            className="w-8 h-8 border border-[#ded4c5] bg-[#fffdf8] text-[#315542] rounded-xl grid place-items-center transition-all hover:bg-[#e7efe4] active:scale-95"
+            className="w-8 h-8 border border-[#ded4c5] bg-[#fffdf8] text-[#315542] rounded-xl grid place-items-center transition-all hover:bg-[#e7efe4] active:scale-95 cursor-pointer"
             onClick={onClose}
             aria-label="Close dialog"
           >
@@ -66,7 +66,7 @@ export function CategoryDialog({
           <div className="grid gap-1.5">
             <label
               htmlFor="new-category"
-              className="text-[#68776d] font-mono text-[9px] font-medium uppercase tracking-wider"
+              className="text-[#3c5043] font-mono text-[9px] font-semibold uppercase tracking-wider"
             >
               Category name
             </label>
@@ -83,14 +83,14 @@ export function CategoryDialog({
           </div>
 
           <div className="grid gap-1.5">
-            <label className="text-[#68776d] font-mono text-[9px] font-medium uppercase tracking-wider">
+            <span className="text-[#3c5043] font-mono text-[9px] font-semibold uppercase tracking-wider">
               Choose a colour
-            </label>
-            <div className="flex flex-wrap gap-2 pt-1">
+            </span>
+            <div className="flex flex-wrap gap-2 pt-1" role="group" aria-label="Category colors">
               {CATEGORY_COLOR_OPTIONS.map((color) => (
                 <button
                   key={color}
-                  className={`w-7 h-7 p-0 border-[3px] border-[#fffdf8] rounded-full transition-all active:scale-95 ${
+                  className={`w-7 h-7 p-0 border-[3px] border-[#fffdf8] rounded-full transition-all active:scale-95 cursor-pointer ${
                     draft.color === color
                       ? "ring-2 ring-[#154734] scale-110"
                       : "hover:scale-105"
@@ -100,7 +100,7 @@ export function CategoryDialog({
                   onClick={() =>
                     setDraft((current) => ({ ...current, color }))
                   }
-                  aria-label={`Choose ${color}`}
+                  aria-label={`Color ${color}`}
                 />
               ))}
             </div>
@@ -108,14 +108,14 @@ export function CategoryDialog({
 
           <div className="flex gap-2 justify-end mt-2">
             <button
-              className="px-3.5 py-2 rounded-xl bg-[#eee6d8] text-[#5e7164] text-xs font-bold transition-all hover:bg-[#e2d8c7] active:scale-95"
+              className="px-3.5 py-2 rounded-xl bg-[#ece4d6] text-[#2c3d31] text-xs font-bold transition-all hover:bg-[#e0d6c4] active:scale-95 cursor-pointer"
               type="button"
               onClick={onClose}
             >
               Cancel
             </button>
             <button
-              className="px-3.5 py-2 rounded-xl bg-[#154734] text-[#fffaf0] text-xs font-bold shadow-md shadow-[#154734]/15 transition-all hover:bg-[#0f392a] active:scale-95"
+              className="px-3.5 py-2 rounded-xl bg-[#154734] text-[#fffaf0] text-xs font-bold shadow-md shadow-[#154734]/15 transition-all hover:bg-[#0f392a] active:scale-95 cursor-pointer"
               type="submit"
             >
               Add category

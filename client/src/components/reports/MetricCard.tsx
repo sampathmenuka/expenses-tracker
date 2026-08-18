@@ -27,7 +27,7 @@ export function MetricCard({
 
   return (
     <div className="p-4 rounded-2xl border border-[#ded4c5] bg-[#fffdf8]/85 shadow-sm">
-      <span className="block text-[#7e8d83] text-[9px] font-mono uppercase tracking-wider">
+      <span className="block text-[#3c5043] text-[9px] font-mono font-semibold uppercase tracking-wider">
         {label}
       </span>
       <strong className="block mt-2 text-[#154734] font-serif text-2xl font-bold tracking-tight leading-none">
@@ -36,10 +36,10 @@ export function MetricCard({
       <span
         className={`flex items-center gap-1.5 mt-2 text-[10px] font-bold ${
           direction === "up"
-            ? "text-[#b36047]"
+            ? "text-[#a04229]"
             : direction === "down"
-            ? "text-[#5b8768]"
-            : "text-[#6d8073]"
+            ? "text-[#2e6b3e]"
+            : "text-[#3c5043]"
         }`}
       >
         <TrendIcon className="w-3 h-3" /> {trend}

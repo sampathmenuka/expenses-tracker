@@ -19,7 +19,7 @@ export function CategorySummary({ categories, expenses }: CategorySummaryProps) 
 
   return (
     <section className="p-4 rounded-2xl border border-[#e0d8ca] bg-[#fffdf8]/75">
-      <h3 className="m-0 mb-3 text-[#315542] text-xs font-bold">
+      <h3 className="m-0 mb-3 text-[#18342a] text-xs font-bold">
         This month’s leading types
       </h3>
       {topCategories.length ? (
@@ -35,21 +35,21 @@ export function CategorySummary({ categories, expenses }: CategorySummaryProps) 
               className="grid place-items-center w-7 h-7 rounded-lg [&_svg]:w-3.5 [&_svg]:h-3.5"
             />
             <div className="min-w-0">
-              <strong className="block text-[#3d5949] text-[11px] font-semibold truncate">
+              <strong className="block text-[#18342a] text-[11px] font-semibold truncate">
                 {category.name}
               </strong>
-              <span className="block text-[#849087] font-mono text-[9px] mt-0.5">
+              <span className="block text-[#3c5043] font-mono text-[9px] mt-0.5 font-medium">
                 {formatCurrency(category.amount)}
               </span>
             </div>
-            <span className="text-[#315542] font-mono text-[10px] font-medium">
+            <span className="text-[#154734] font-mono text-[10px] font-semibold">
               {formatCurrency(category.amount)}
             </span>
           </div>
         ))
       ) : (
-        <div className="flex flex-col items-center justify-center min-h-[135px] text-center text-[#819087] text-[11px] leading-relaxed">
-          <Leaf className="w-6 h-6 text-[#a6bca3] mb-2" />
+        <div className="flex flex-col items-center justify-center min-h-[135px] text-center text-[#3c5043] text-[11px] leading-relaxed">
+          <Leaf className="w-6 h-6 text-[#4f8b83] mb-2" />
           <span>Add an expense to see what leads your month.</span>
         </div>
       )}

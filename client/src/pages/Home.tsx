@@ -153,16 +153,18 @@ export default function Home() {
   };
 
   return (
-    <div className="app-frame">
-      <Sidebar
-        page={page}
-        onSelectPage={handleSelectPage}
-        onExportCSV={handleExportCSV}
-        monthTotal={monthTotal}
-        monthExpensesCount={monthExpenses.length}
-      />
+    <div className="min-h-screen grid grid-cols-1 md:grid-cols-[240px_1fr] xl:grid-cols-[260px_1fr_320px] max-w-[1680px] mx-auto">
+      <div className="hidden md:block">
+        <Sidebar
+          page={page}
+          onSelectPage={handleSelectPage}
+          onExportCSV={handleExportCSV}
+          monthTotal={monthTotal}
+          monthExpensesCount={monthExpenses.length}
+        />
+      </div>
 
-      <main className="main-column">
+      <main className="min-w-0 px-4 sm:px-8 lg:px-12 py-6 sm:py-9">
         <MobileNav
           page={page}
           isOpen={mobileMenuOpen}
@@ -181,7 +183,6 @@ export default function Home() {
             draft={draft}
             categories={categories}
             expenses={visibleExpenses}
-            allTodayExpensesCount={todayExpenses.length}
             pendingDelete={pendingDelete}
             selectedCategory={selectedFilterCategory}
             searchQuery={searchQuery}

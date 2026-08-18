@@ -11,7 +11,10 @@ export function CategoryBadge({ category, className }: CategoryBadgeProps) {
 
   return (
     <span
-      className={className || "expense-icon"}
+      className={
+        className ||
+        "grid place-items-center shrink-0 w-[31px] h-[31px] rounded-[9px] [&_svg]:w-4 [&_svg]:h-4"
+      }
       style={{
         color: category.color,
         background: `${category.color}20`,

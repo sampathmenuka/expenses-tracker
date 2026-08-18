@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160" height="160" fill="none">
+  <defs>
+    <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#c9dac3" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#c9dac3" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="pot-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d6805d" />
+      <stop offset="100%" stop-color="#b56342" />
+    </linearGradient>
+    <linearGradient id="stem-grad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#2d6a4f" />
+      <stop offset="100%" stop-color="#52b788" />
+    </linearGradient>
+    <linearGradient id="leaf1-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#74c69d" />
+      <stop offset="100%" stop-color="#40916c" />
+    </linearGradient>
+    <linearGradient id="leaf2-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#95d5b2" />
+      <stop offset="100%" stop-color="#52b788" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background Soft Aura -->
+  <circle cx="80" cy="80" r="70" fill="url(#halo)" />
+
+  <!-- Shadow Base -->
+  <ellipse cx="80" cy="132" rx="38" ry="7" fill="#dfd4c4" opacity="0.8"/>
+
+  <!-- Terracotta Clay Pot -->
+  <path d="M58 98 H102 L96 128 C95.5 130.5 93.5 132 91 132 H69 C66.5 132 64.5 130.5 64 128 L58 98 Z" fill="url(#pot-grad)"/>
+  <rect x="54" y="93" width="52" height="7" rx="3.5" fill="#e0906f"/>
+  <line x1="60" y1="104" x2="100" y2="104" stroke="#a24c2e" stroke-width="1.5" opacity="0.4"/>
+
+  <!-- Sprout Stem -->
+  <path d="M80 94 C80 75 80 58 80 44" stroke="url(#stem-grad)" stroke-width="4.5" stroke-linecap="round"/>
+  
+  <!-- Right Leaf -->
+  <path d="M80 62 C80 62 96 60 102 48 C104 43 98 38 90 44 C82 50 80 59 80 62 Z" fill="url(#leaf1-grad)"/>
+  
+  <!-- Left Leaf -->
+  <path d="M80 52 C80 52 64 48 58 38 C56 33 63 29 70 34 C77 39 80 49 80 52 Z" fill="url(#leaf2-grad)"/>
+
+  <!-- Little Droplet / Coin shimmer -->
+  <circle cx="94" cy="32" r="3.5" fill="#f4a261" opacity="0.9"/>
+  <circle cx="62" cy="24" r="2.5" fill="#74c69d" opacity="0.8"/>
+  <circle cx="106" cy="66" r="2" fill="#52b788" opacity="0.6"/>
+</svg>

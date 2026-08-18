@@ -4,11 +4,21 @@ interface BrandProps {
 
 export function Brand({ compact = false }: BrandProps) {
   return (
-    <div className="brand">
-      <img className="brand-mark" src="/logo.svg" alt="Ledger Logo" />
+    <div className="flex items-center gap-2.5 px-1 py-0.5 pb-6">
+      <img
+        className="w-[42px] h-[42px] object-contain shrink-0"
+        src="/logo.svg"
+        alt="Ledger Logo"
+      />
       <div>
-        <span className="brand-name">Daily Ledger</span>
-        {!compact && <span className="brand-subtitle">Expense tracker</span>}
+        <span className="block font-serif text-[19px] font-bold tracking-tight text-[#154734] leading-none">
+          Daily Ledger
+        </span>
+        {!compact && (
+          <span className="block mt-1 text-[#7a837b] text-[9px] font-mono font-medium uppercase tracking-wider">
+            Expense tracker
+          </span>
+        )}
       </div>
     </div>
   );

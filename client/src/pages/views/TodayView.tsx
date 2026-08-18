@@ -1,4 +1,4 @@
-import { CalendarDays, Info, Plus, Search } from "lucide-react";
+import { CalendarDays, Plus } from "lucide-react";
 import { ExpenseLedger } from "@/pages/views/ExpenseLedger";
 import type { Category } from "@/types/category";
 import type { Expense, ExpenseDraft } from "@/types/expense";
@@ -11,7 +11,6 @@ interface TodayViewProps {
   draft: ExpenseDraft;
   categories: Category[];
   expenses: Expense[];
-  allTodayExpensesCount: number;
   pendingDelete: string | null;
   selectedCategory: string;
   searchQuery: string;
@@ -30,7 +29,6 @@ export function TodayView({
   draft,
   categories,
   expenses,
-  allTodayExpensesCount,
   pendingDelete,
   selectedCategory,
   searchQuery,
@@ -46,47 +44,73 @@ export function TodayView({
 
   return (
     <>
-      <header className="page-heading">
+      <header className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6">
         <div>
-          <span className="eyebrow">Daily view · {today}</span>
-          <h1>{formattedDate}</h1>
+          <span className="text-[#6e8075] text-[9px] font-mono font-semibold uppercase tracking-wider">
+            Daily view · {today}
+          </span>
+          <h1 className="mt-1 font-serif text-3xl sm:text-4xl lg:text-[42px] font-bold text-[#154734] leading-tight tracking-tight">
+            {formattedDate}
+          </h1>
         </div>
-        <div className="heading-utility">
-          <CalendarDays /> Your personal spending note
+        <div className="hidden sm:flex items-center gap-2 text-[#6b756d] text-xs font-bold pt-1">
+          <CalendarDays className="w-4 h-4 text-[#154734]" />
+          <span>Your personal spending note</span>
         </div>
       </header>
 
-      <section className="day-hero">
-        <div className="hero-grid">
-          <div className="hero-message">
-            <span className="eyebrow">A small daily ritual</span>
-            <h2>Give every expense a place.</h2>
-            <p>
+      {/* Hero card */}
+      <section className="relative overflow-hidden p-6 sm:p-7 mb-7 rounded-3xl border border-[#154734]/15 bg-gradient-to-br from-[#fffdf8]/95 via-[#f4ede0]/90 to-[#eee4d2]/85 shadow-lg shadow-black/5 animate-surface">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-5">
+          <div className="max-w-md">
+            <span className="text-[#6e8075] text-[9px] font-mono font-semibold uppercase tracking-wider">
+              A small daily ritual
+            </span>
+            <h2 className="mt-2 mb-1.5 font-serif text-2xl sm:text-[26px] font-bold text-[#154734] tracking-tight leading-tight">
+              Give every expense a place.
+            </h2>
+            <p className="m-0 text-[#4b6657] text-xs sm:text-[13px] leading-relaxed font-medium">
               Log the little things now. Your weekly and monthly picture will
               build itself.
             </p>
           </div>
-          <div className="today-total">
-            <span className="summary-label">Spent today</span>
-            <strong>{formatCurrency(todayTotal)}</strong>
+          <div className="pt-3 md:pt-0 md:pl-5 border-t md:border-t-0 md:border-l border-[#154734]/20 min-w-[140px]">
+            <span className="text-[#5c7768] text-[9px] font-mono font-semibold uppercase tracking-wider">
+              Spent today
+            </span>
+            <strong className="block mt-1 font-serif text-3xl sm:text-4xl font-bold text-[#154734] tracking-tight leading-none">
+              {formatCurrency(todayTotal)}
+            </strong>
           </div>
         </div>
       </section>
 
-      <section>
-        <div className="section-heading">
+      {/* Log an expense Form */}
+      <section className="mb-7">
+        <div className="flex items-center justify-between gap-3 mb-3">
           <div>
-            <h2>Log an expense</h2>
-            <p>One line is all it takes.</p>
+            <h2 className="m-0 font-serif text-xl sm:text-[22px] font-bold text-[#154734] tracking-tight">
+              Log an expense
+            </h2>
+            <p className="m-0 text-[#778178] text-xs">One line is all it takes.</p>
           </div>
         </div>
-        <div className="entry-card">
-          <form className="entry-form" onSubmit={onSubmit}>
-            <div className="field-stack field-title">
-              <label htmlFor="expense-title">What was it?</label>
+        <div className="p-4 sm:p-5 rounded-2xl border border-[#a08e73]/25 bg-[#fffdf8]/85 shadow-sm">
+          <form
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_135px_135px_42px] gap-3 items-end"
+            onSubmit={onSubmit}
+          >
+            {/* Title */}
+            <div className="grid gap-1.5 min-w-0 sm:col-span-2 lg:col-span-1">
+              <label
+                htmlFor="expense-title"
+                className="text-[#68776d] font-mono text-[9px] font-medium uppercase tracking-wider"
+              >
+                What was it?
+              </label>
               <input
                 id="expense-title"
-                className="ledger-input"
+                className="w-full h-10 px-3 border border-[#ded4c5] rounded-xl bg-[#fffdf8] text-[#234437] text-xs font-bold outline-none transition-all focus:border-[#6f957e] focus:ring-2 focus:ring-[#a9bea8]/30"
                 placeholder="e.g. Lunch at the market"
                 value={draft.title}
                 onChange={(event) =>
@@ -97,11 +121,18 @@ export function TodayView({
                 }
               />
             </div>
-            <div className="field-stack field-category">
-              <label htmlFor="expense-category">Expense type</label>
+
+            {/* Category */}
+            <div className="grid gap-1.5 min-w-0">
+              <label
+                htmlFor="expense-category"
+                className="text-[#68776d] font-mono text-[9px] font-medium uppercase tracking-wider"
+              >
+                Expense type
+              </label>
               <select
                 id="expense-category"
-                className="ledger-select"
+                className="w-full h-10 px-3 border border-[#ded4c5] rounded-xl bg-[#fffdf8] text-[#234437] text-xs font-bold outline-none transition-all focus:border-[#6f957e] focus:ring-2 focus:ring-[#a9bea8]/30"
                 value={draft.categoryId}
                 onChange={(event) =>
                   setDraft((current) => ({
@@ -117,11 +148,18 @@ export function TodayView({
                 ))}
               </select>
             </div>
-            <div className="field-stack field-date">
-              <label htmlFor="expense-date">Date</label>
+
+            {/* Date */}
+            <div className="grid gap-1.5 min-w-0">
+              <label
+                htmlFor="expense-date"
+                className="text-[#68776d] font-mono text-[9px] font-medium uppercase tracking-wider"
+              >
+                Date
+              </label>
               <input
                 id="expense-date"
-                className="ledger-input"
+                className="w-full h-10 px-2.5 border border-[#ded4c5] rounded-xl bg-[#fffdf8] text-[#234437] text-xs font-bold outline-none transition-all focus:border-[#6f957e] focus:ring-2 focus:ring-[#a9bea8]/30"
                 type="date"
                 value={draft.date}
                 onChange={(event) =>
@@ -132,13 +170,22 @@ export function TodayView({
                 }
               />
             </div>
-            <div className="field-stack field-amount">
-              <label htmlFor="expense-amount">Amount</label>
-              <div className="input-shell">
-                <span className="money-prefix">Rs.</span>
+
+            {/* Amount */}
+            <div className="grid gap-1.5 min-w-0">
+              <label
+                htmlFor="expense-amount"
+                className="text-[#68776d] font-mono text-[9px] font-medium uppercase tracking-wider"
+              >
+                Amount
+              </label>
+              <div className="relative min-w-0">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#728077] font-mono text-[11px] pointer-events-none select-none">
+                  Rs.
+                </span>
                 <input
                   id="expense-amount"
-                  className="ledger-input amount-input"
+                  className="w-full h-10 pl-10 pr-3 border border-[#ded4c5] rounded-xl bg-[#fffdf8] text-[#234437] font-mono text-xs font-bold outline-none transition-all focus:border-[#6f957e] focus:ring-2 focus:ring-[#a9bea8]/30"
                   inputMode="decimal"
                   type="number"
                   min="0.01"
@@ -154,64 +201,60 @@ export function TodayView({
                 />
               </div>
             </div>
+
+            {/* Submit */}
             <button
-              className="add-expense"
+              className="w-full lg:w-[42px] h-10 flex items-center justify-center rounded-xl bg-[#154734] text-[#fffaf0] shadow-md shadow-[#154734]/15 transition-all hover:bg-[#0f392a] active:scale-95 shrink-0"
               type="submit"
               aria-label="Add expense"
             >
-              <Plus />
+              <Plus className="w-5 h-5" />
             </button>
           </form>
-          <div className="form-helper">
-            <Info /> Need a different way to spend?{" "}
+
+          <div className="flex items-center gap-1.5 mt-3 text-[#778178] text-[11px]">
+            <span>Need a different way to spend?</span>
             <button
-              className="text-button"
-              onClick={onAddCategory}
+              className="text-[#154734] font-bold underline underline-offset-2 hover:text-[#0f392a]"
               type="button"
+              onClick={onAddCategory}
             >
               Add your own category
             </button>
-            .
           </div>
         </div>
       </section>
 
+      {/* Filter and Ledger */}
       <section>
-        <div className="section-heading">
-          <div>
-            <h2>Today’s entries</h2>
-            <p>
-              {allTodayExpensesCount
-                ? `${allTodayExpensesCount} expense${allTodayExpensesCount === 1 ? "" : "s"} recorded`
-                : "Your blank page for today."}
-            </p>
-          </div>
-          {allTodayExpensesCount > 0 && (
-            <div className="filter-bar">
-              <div className="search-box">
-                <Search size={13} />
-                <input
-                  type="text"
-                  placeholder="Search entries..."
-                  value={searchQuery}
-                  onChange={(e) => onSearchChange(e.target.value)}
-                />
-              </div>
-              <select
-                className="filter-select"
-                value={selectedCategory}
-                onChange={(e) => onSelectCategory(e.target.value)}
-              >
-                <option value="all">All Types</option>
-                {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.name}
-                  </option>
-                ))}
-              </select>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+          <h2 className="m-0 font-serif text-xl sm:text-[22px] font-bold text-[#154734] tracking-tight">
+            Today’s recorded list
+          </h2>
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-1.5 px-2.5 h-8 border border-[#ded4c5] rounded-lg bg-[#fffdf8] text-[#728077]">
+              <input
+                className="border-0 outline-none bg-transparent text-xs text-[#154734] placeholder:text-[#728077] w-28"
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => onSearchChange(e.target.value)}
+              />
             </div>
-          )}
+            <select
+              className="h-8 px-2 border border-[#ded4c5] rounded-lg bg-[#fffdf8] text-xs font-semibold text-[#154734] outline-none"
+              value={selectedCategory}
+              onChange={(e) => onSelectCategory(e.target.value)}
+            >
+              <option value="all">All categories</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
+
         <ExpenseLedger
           expenses={expenses}
           categories={categories}

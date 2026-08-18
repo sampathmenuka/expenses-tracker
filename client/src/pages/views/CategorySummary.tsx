@@ -18,24 +18,38 @@ export function CategorySummary({ categories, expenses }: CategorySummaryProps) 
   const topCategories = calculateCategoryBreakdown(categories, monthExpenses).slice(0, 4);
 
   return (
-    <section className="category-summary">
-      <h3>This month’s leading types</h3>
+    <section className="p-4 rounded-2xl border border-[#e0d8ca] bg-[#fffdf8]/75">
+      <h3 className="m-0 mb-3 text-[#315542] text-xs font-bold">
+        This month’s leading types
+      </h3>
       {topCategories.length ? (
-        topCategories.map((category) => (
-          <div className="category-summary-row" key={category.id}>
-            <CategoryBadge category={category} className="summary-icon" />
-            <div>
-              <strong>{category.name}</strong>
-              <span>{formatCurrency(category.amount)}</span>
+        topCategories.map((category, idx) => (
+          <div
+            className={`grid grid-cols-[28px_1fr_auto] items-center gap-2.5 py-2 ${
+              idx > 0 ? "border-t border-[#eee7dc]" : ""
+            }`}
+            key={category.id}
+          >
+            <CategoryBadge
+              category={category}
+              className="grid place-items-center w-7 h-7 rounded-lg [&_svg]:w-3.5 [&_svg]:h-3.5"
+            />
+            <div className="min-w-0">
+              <strong className="block text-[#3d5949] text-[11px] font-semibold truncate">
+                {category.name}
+              </strong>
+              <span className="block text-[#849087] font-mono text-[9px] mt-0.5">
+                {formatCurrency(category.amount)}
+              </span>
             </div>
-            <span className="summary-amount">
+            <span className="text-[#315542] font-mono text-[10px] font-medium">
               {formatCurrency(category.amount)}
             </span>
           </div>
         ))
       ) : (
-        <div className="breakdown-empty" style={{ minHeight: 135 }}>
-          <Leaf />
+        <div className="flex flex-col items-center justify-center min-h-[135px] text-center text-[#819087] text-[11px] leading-relaxed">
+          <Leaf className="w-6 h-6 text-[#a6bca3] mb-2" />
           <span>Add an expense to see what leads your month.</span>
         </div>
       )}

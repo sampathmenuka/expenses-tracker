@@ -2,9 +2,9 @@ import type { Category } from "@/types/category";
 import type { Expense } from "@/types/expense";
 
 export function formatCurrency(value: number): string {
-  return new Intl.NumberFormat(undefined, {
+  return new Intl.NumberFormat("en-LK", {
     style: "currency",
-    currency: "USD",
+    currency: "LKR",
     maximumFractionDigits: 2,
   }).format(value);
 }

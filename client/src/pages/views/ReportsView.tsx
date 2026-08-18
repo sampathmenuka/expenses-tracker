@@ -13,14 +13,9 @@ import { Receipt } from "lucide-react";
 import { ChartTooltip } from "@/components/reports/ChartTooltip";
 import { EmptyReport } from "@/components/reports/EmptyReport";
 import { MetricCard } from "@/components/reports/MetricCard";
-import type { Category } from "@/types/category";
 import type { ReportPeriod } from "@/types/navigation";
 import { formatShortDate } from "@/utils/date";
-import { formatCurrency } from "@/utils/format";
-
-interface CategoryBreakdownItem extends Category {
-  amount: number;
-}
+import { formatCurrency, type CategoryBreakdownItem } from "@/utils/format";
 
 interface ReportsViewProps {
   period: ReportPeriod;
@@ -65,32 +60,50 @@ export function ReportsView({
 
   return (
     <>
-      <header className="page-heading">
+      <header className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6">
         <div>
-          <span className="eyebrow">Spending reports · {rangeText}</span>
-          <h1>{periodTitle}</h1>
+          <span className="text-[#6e8075] text-[9px] font-mono font-semibold uppercase tracking-wider">
+            Spending reports · {rangeText}
+          </span>
+          <h1 className="mt-1 font-serif text-3xl sm:text-4xl lg:text-[42px] font-bold text-[#154734] leading-tight tracking-tight">
+            {periodTitle}
+          </h1>
         </div>
-        <div className="heading-utility">
-          <Receipt /> Your money, seen clearly
+        <div className="hidden sm:flex items-center gap-2 text-[#6b756d] text-xs font-bold pt-1">
+          <Receipt className="w-4 h-4 text-[#154734]" />
+          <span>Your money, seen clearly</span>
         </div>
       </header>
 
-      <section className="report-top">
-        <span className="eyebrow">Report reading</span>
-        <h2>See the week, then choose the next move.</h2>
-        <p>
+      {/* Period Selector Card */}
+      <section className="relative overflow-hidden p-6 sm:p-7 mb-7 rounded-3xl border border-[#154734]/15 bg-gradient-to-br from-[#fffdf8]/95 via-[#f2ebde]/90 to-[#eae0cd]/85 shadow-lg shadow-black/5 animate-surface">
+        <span className="text-[#6e8075] text-[9px] font-mono font-semibold uppercase tracking-wider">
+          Report reading
+        </span>
+        <h2 className="mt-2 mb-1.5 font-serif text-2xl sm:text-[28px] font-bold text-[#154734] tracking-tight leading-tight">
+          See the rhythm, then choose the next move.
+        </h2>
+        <p className="m-0 max-w-md text-[#4f6858] text-xs sm:text-[13px] leading-relaxed font-medium">
           Switch between the week and month to spot where your money has been
           going.
         </p>
-        <div className="report-segmented">
+        <div className="inline-flex mt-5 p-1 gap-1 rounded-xl bg-[#fffdf8]/80 border border-[#154734]/15 shadow-xs">
           <button
-            className={`segment ${period === "weekly" ? "active" : ""}`}
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all active:scale-95 ${
+              period === "weekly"
+                ? "bg-[#154734] text-[#fffaf0] shadow-sm"
+                : "bg-transparent text-[#55705f] hover:text-[#154734]"
+            }`}
             onClick={() => setPeriod("weekly")}
           >
             Weekly
           </button>
           <button
-            className={`segment ${period === "monthly" ? "active" : ""}`}
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all active:scale-95 ${
+              period === "monthly"
+                ? "bg-[#154734] text-[#fffaf0] shadow-sm"
+                : "bg-transparent text-[#55705f] hover:text-[#154734]"
+            }`}
             onClick={() => setPeriod("monthly")}
           >
             Monthly
@@ -98,7 +111,8 @@ export function ReportsView({
         </div>
       </section>
 
-      <section className="report-metrics">
+      {/* Metrics */}
+      <section className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
         <MetricCard
           label="Total spent"
           value={formatCurrency(periodTotal)}
@@ -125,16 +139,22 @@ export function ReportsView({
         />
       </section>
 
-      <section className="reports-grid">
-        <div className="report-panel">
-          <h3>Daily rhythm</h3>
-          <p className="panel-subtitle">How expenses gathered over the period.</p>
+      {/* Charts Grid */}
+      <section className="grid grid-cols-1 lg:grid-cols-[1.35fr_0.85fr] gap-4">
+        {/* Bar chart panel */}
+        <div className="overflow-hidden rounded-2xl border border-[#a08e73]/25 bg-[#fffdf8]/85 p-5 shadow-sm">
+          <h3 className="m-0 font-serif text-lg sm:text-xl font-bold text-[#315542] tracking-tight">
+            Daily rhythm
+          </h3>
+          <p className="mt-1 mb-0 text-[#818d84] text-xs">
+            How expenses gathered over the period.
+          </p>
           {hasData ? (
-            <div className="chart-box">
+            <div className="h-56 mt-3 -mx-2">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={chartSeries}
-                  margin={{ top: 12, right: 4, left: -18, bottom: 0 }}
+                  margin={{ top: 12, right: 8, left: -18, bottom: 0 }}
                 >
                   <XAxis
                     dataKey="label"
@@ -155,7 +175,9 @@ export function ReportsView({
                       fontSize: 9,
                       fontFamily: "IBM Plex Mono",
                     }}
-                    tickFormatter={(value) => `$${value}`}
+                    tickFormatter={(value) =>
+                      value >= 1000 ? `${(value / 1000).toFixed(0)}k` : `${value}`
+                    }
                   />
                   <RechartsTooltip
                     cursor={{ fill: "#f0eadf" }}
@@ -171,16 +193,21 @@ export function ReportsView({
               </ResponsiveContainer>
             </div>
           ) : (
-            <EmptyReport text="Your daily pattern will appear after you record an expense." />
+            <EmptyReport text="No expenses recorded for this period yet." />
           )}
         </div>
 
-        <div className="report-panel">
-          <h3>By category</h3>
-          <p className="panel-subtitle">Your most-used expense types.</p>
-          {hasData ? (
+        {/* Category breakdown panel */}
+        <div className="overflow-hidden rounded-2xl border border-[#a08e73]/25 bg-[#fffdf8]/85 p-5 shadow-sm flex flex-col">
+          <h3 className="m-0 font-serif text-lg sm:text-xl font-bold text-[#315542] tracking-tight">
+            Category share
+          </h3>
+          <p className="mt-1 mb-0 text-[#818d84] text-xs">
+            Where your money went by proportion.
+          </p>
+          {hasData && categoryBreakdown.length ? (
             <>
-              <div className="chart-box">
+              <div className="h-44 mt-2">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
@@ -189,33 +216,41 @@ export function ReportsView({
                       nameKey="name"
                       cx="50%"
                       cy="50%"
-                      innerRadius={54}
-                      outerRadius={78}
+                      innerRadius={45}
+                      outerRadius={68}
                       paddingAngle={3}
                     >
-                      {categoryBreakdown.map((item) => (
-                        <Cell key={item.id} fill={item.color} />
+                      {categoryBreakdown.map((entry) => (
+                        <Cell key={entry.id} fill={entry.color} />
                       ))}
                     </Pie>
                     <RechartsTooltip content={<ChartTooltip />} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
-              <div className="breakdown-list">
-                {categoryBreakdown.slice(0, 4).map((item) => (
-                  <div className="breakdown-row" key={item.id}>
-                    <i
-                      className="breakdown-dot"
-                      style={{ background: item.color }}
+
+              <div className="divide-y divide-[#eee7dc] mt-2">
+                {categoryBreakdown.map((item) => (
+                  <div
+                    className="grid grid-cols-[10px_1fr_auto] items-center gap-2.5 py-2"
+                    key={item.id}
+                  >
+                    <span
+                      className="w-2 h-2 rounded-full"
+                      style={{ backgroundColor: item.color }}
                     />
-                    <strong>{item.name}</strong>
-                    <span>{formatCurrency(item.amount)}</span>
+                    <strong className="text-[#45614f] text-xs font-semibold truncate">
+                      {item.name}
+                    </strong>
+                    <span className="text-[#315542] font-mono text-[11px] font-medium">
+                      {formatCurrency(item.amount)}
+                    </span>
                   </div>
                 ))}
               </div>
             </>
           ) : (
-            <EmptyReport text="Your category breakdown will appear here." />
+            <EmptyReport text="No categories to display for this period." />
           )}
         </div>
       </section>

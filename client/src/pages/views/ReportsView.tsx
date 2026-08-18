@@ -62,14 +62,14 @@ export function ReportsView({
     <>
       <header className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6">
         <div>
-          <span className="text-[#6e8075] text-[9px] font-mono font-semibold uppercase tracking-wider">
+          <span className="text-[#3c5043] text-[9px] font-mono font-semibold uppercase tracking-wider">
             Spending reports · {rangeText}
           </span>
           <h1 className="mt-1 font-serif text-3xl sm:text-4xl lg:text-[42px] font-bold text-[#154734] leading-tight tracking-tight">
             {periodTitle}
           </h1>
         </div>
-        <div className="hidden sm:flex items-center gap-2 text-[#6b756d] text-xs font-bold pt-1">
+        <div className="hidden sm:flex items-center gap-2 text-[#3c5043] text-xs font-bold pt-1">
           <Receipt className="w-4 h-4 text-[#154734]" />
           <span>Your money, seen clearly</span>
         </div>
@@ -77,32 +77,32 @@ export function ReportsView({
 
       {/* Period Selector Card */}
       <section className="relative overflow-hidden p-6 sm:p-7 mb-7 rounded-3xl border border-[#154734]/15 bg-gradient-to-br from-[#fffdf8]/95 via-[#f2ebde]/90 to-[#eae0cd]/85 shadow-lg shadow-black/5 animate-surface">
-        <span className="text-[#6e8075] text-[9px] font-mono font-semibold uppercase tracking-wider">
+        <span className="text-[#3c5043] text-[9px] font-mono font-semibold uppercase tracking-wider">
           Report reading
         </span>
         <h2 className="mt-2 mb-1.5 font-serif text-2xl sm:text-[28px] font-bold text-[#154734] tracking-tight leading-tight">
           See the rhythm, then choose the next move.
         </h2>
-        <p className="m-0 max-w-md text-[#4f6858] text-xs sm:text-[13px] leading-relaxed font-medium">
+        <p className="m-0 max-w-md text-[#234437] text-xs sm:text-[13px] leading-relaxed font-medium">
           Switch between the week and month to spot where your money has been
           going.
         </p>
         <div className="inline-flex mt-5 p-1 gap-1 rounded-xl bg-[#fffdf8]/80 border border-[#154734]/15 shadow-xs">
           <button
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all active:scale-95 ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all active:scale-95 cursor-pointer ${
               period === "weekly"
                 ? "bg-[#154734] text-[#fffaf0] shadow-sm"
-                : "bg-transparent text-[#55705f] hover:text-[#154734]"
+                : "bg-transparent text-[#2c3d31] hover:text-[#154734]"
             }`}
             onClick={() => setPeriod("weekly")}
           >
             Weekly
           </button>
           <button
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all active:scale-95 ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all active:scale-95 cursor-pointer ${
               period === "monthly"
                 ? "bg-[#154734] text-[#fffaf0] shadow-sm"
-                : "bg-transparent text-[#55705f] hover:text-[#154734]"
+                : "bg-transparent text-[#2c3d31] hover:text-[#154734]"
             }`}
             onClick={() => setPeriod("monthly")}
           >
@@ -146,7 +146,7 @@ export function ReportsView({
           <h3 className="m-0 font-serif text-lg sm:text-xl font-bold text-[#315542] tracking-tight">
             Daily rhythm
           </h3>
-          <p className="mt-1 mb-0 text-[#818d84] text-xs">
+          <p className="mt-1 mb-0 text-[#3c5043] text-xs">
             How expenses gathered over the period.
           </p>
           {hasData ? (
@@ -161,7 +161,7 @@ export function ReportsView({
                     axisLine={false}
                     tickLine={false}
                     tick={{
-                      fill: "#7d8a82",
+                      fill: "#3c5043",
                       fontSize: 10,
                       fontFamily: "IBM Plex Mono",
                     }}
@@ -171,7 +171,7 @@ export function ReportsView({
                     axisLine={false}
                     tickLine={false}
                     tick={{
-                      fill: "#7d8a82",
+                      fill: "#3c5043",
                       fontSize: 9,
                       fontFamily: "IBM Plex Mono",
                     }}
@@ -202,7 +202,7 @@ export function ReportsView({
           <h3 className="m-0 font-serif text-lg sm:text-xl font-bold text-[#315542] tracking-tight">
             Category share
           </h3>
-          <p className="mt-1 mb-0 text-[#818d84] text-xs">
+          <p className="mt-1 mb-0 text-[#3c5043] text-xs">
             Where your money went by proportion.
           </p>
           {hasData && categoryBreakdown.length ? (
@@ -239,10 +239,10 @@ export function ReportsView({
                       className="w-2 h-2 rounded-full"
                       style={{ backgroundColor: item.color }}
                     />
-                    <strong className="text-[#45614f] text-xs font-semibold truncate">
+                    <strong className="text-[#18342a] text-xs font-semibold truncate">
                       {item.name}
                     </strong>
-                    <span className="text-[#315542] font-mono text-[11px] font-medium">
+                    <span className="text-[#154734] font-mono text-[11px] font-semibold">
                       {formatCurrency(item.amount)}
                     </span>
                   </div>

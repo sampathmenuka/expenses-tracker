@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" fill="none">
+  <defs>
+    <linearGradient id="logo-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1b4d3e" />
+      <stop offset="100%" stop-color="#0f3327" />
+    </linearGradient>
+    <linearGradient id="leaf-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8cd4a8" />
+      <stop offset="100%" stop-color="#52a77a" />
+    </linearGradient>
+    <linearGradient id="accent-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffd599" />
+      <stop offset="100%" stop-color="#e69c52" />
+    </linearGradient>
+    <filter id="subtle-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.15" />
+    </filter>
+  </defs>
+  <rect width="120" height="120" rx="30" fill="url(#logo-bg)" filter="url(#subtle-shadow)"/>
+  <rect x="6" y="6" width="108" height="108" rx="24" stroke="rgba(255,255,255,0.12)" stroke-width="1.5" />
+  <!-- Book spine / Ledger spine lines -->
+  <path d="M34 32 H44 V88 H34 C30.686 88 28 85.314 28 82 V38 C28 34.686 30.686 32 34 32 Z" fill="#153e32" opacity="0.6"/>
+  <path d="M44 32 H86 C89.314 32 92 34.686 92 38 V82 C92 85.314 89.314 88 86 88 H44 V32 Z" fill="rgba(255,255,255,0.05)"/>
+  <!-- Decorative grid lines on ledger page -->
+  <line x1="52" y1="46" x2="84" y2="46" stroke="rgba(255,255,255,0.18)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="52" y1="56" x2="84" y2="56" stroke="rgba(255,255,255,0.14)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="52" y1="66" x2="74" y2="66" stroke="rgba(255,255,255,0.14)" stroke-width="2" stroke-linecap="round"/>
+  <!-- Sprout emblem sprouting from ledger -->
+  <path d="M60 84 C60 68 64 56 74 48" stroke="url(#accent-grad)" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M74 48 C74 48 83 49 84 57 C85 64 77 65 72 61 Z" fill="url(#leaf-grad)" />
+  <path d="M66 58 C66 58 57 56 55 49 C53 43 60 41 65 46 Z" fill="url(#leaf-grad)" opacity="0.9"/>
+  <!-- Gold coin accent -->
+  <circle cx="78" cy="74" r="8" fill="url(#accent-grad)"/>
+  <text x="78" y="78" font-family="'IBM Plex Mono', monospace" font-size="10" font-weight="700" fill="#1b4d3e" text-anchor="middle">$</text>
+</svg>

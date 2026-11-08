@@ -10,6 +10,7 @@ import {
   Utensils,
   type LucideIcon,
 } from "lucide-react";
+import { SERIES_COLORS } from "@/constants/chart";
 import type { Category, CategoryIconKey } from "@/types/category";
 
 export const ICON_MAP: Record<CategoryIconKey, LucideIcon> = {
@@ -24,28 +25,20 @@ export const ICON_MAP: Record<CategoryIconKey, LucideIcon> = {
   custom: Tags,
 };
 
-export const DEFAULT_CATEGORIES: Category[] = [
-  { id: "food", name: "Foods", color: "#d6805d", icon: "food" },
-  { id: "transport", name: "Transport", color: "#4f8b83", icon: "transport" },
-  { id: "mobile", name: "Data & Mobile", color: "#657cc3", icon: "mobile" },
-  { id: "education", name: "Education", color: "#a26caa", icon: "education" },
-  { id: "materials", name: "Materials", color: "#a78a64", icon: "materials" },
-  { id: "clothes", name: "Clothes", color: "#bf7488", icon: "clothes" },
-  { id: "donations", name: "Donations", color: "#7fa36c", icon: "donations" },
-  { id: "other", name: "Other", color: "#86949a", icon: "other" },
-];
+// Same validated order as the chart palette, so categories stay distinct in charts.
+export const CATEGORY_COLOR_OPTIONS = SERIES_COLORS;
 
-export const CATEGORY_COLOR_OPTIONS = [
-  "#d6805d",
-  "#4f8b83",
-  "#657cc3",
-  "#a26caa",
-  "#a78a64",
-  "#bf7488",
-  "#7fa36c",
-  "#86949a",
-];
+const UNKNOWN_CATEGORY: Category = {
+  id: "unknown",
+  name: "Uncategorised",
+  color: "#86949a",
+  icon: "other",
+  isCustom: false,
+  isFallback: false,
+  monthlyBudget: null,
+  expenseCount: 0,
+};
 
 export function getCategoryById(categories: Category[], categoryId: string): Category {
-  return categories.find((c) => c.id === categoryId) ?? DEFAULT_CATEGORIES[7];
+  return categories.find((c) => c.id === categoryId) ?? UNKNOWN_CATEGORY;
 }

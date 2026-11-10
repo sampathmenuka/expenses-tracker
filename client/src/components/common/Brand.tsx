@@ -15,7 +15,7 @@ export function Brand({ compact = false }: BrandProps) {
           Daily Ledger
         </span>
         {!compact && (
-          <span className="block mt-1 text-[#7a837b] text-[9px] font-mono font-medium uppercase tracking-wider">
+          <span className="block mt-1 text-[#606761] text-[9px] font-mono font-medium uppercase tracking-wider">
             Expense tracker
           </span>
         )}

@@ -1,2 +1,3 @@
+# Pages behind sign-in are protected by the app itself; only the API is off-limits.
 User-agent: *
-Allow: /
+Disallow: /api/

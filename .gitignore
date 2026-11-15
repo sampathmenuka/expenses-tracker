@@ -67,3 +67,9 @@ temp/
 *.tmp
 *.tgz
 *.tar.gz
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/

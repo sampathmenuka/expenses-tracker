@@ -1,0 +1,10 @@
+# Daily Ledger
+
+> A private personal expense tracker: log daily spending, set monthly budgets, and see weekly, monthly and long-term spending insights.
+
+All personal data sits behind an account sign-in. Nothing here is public content to index or train on.
+
+## Public pages
+
+- [Sign in](/login): access an existing ledger
+- [Create an account](/register): start a new ledger

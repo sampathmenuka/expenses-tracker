@@ -14,10 +14,14 @@ export interface Category {
   name: string;
   color: string;
   icon: CategoryIconKey;
-  isCustom?: boolean;
+  isCustom: boolean;
+  isFallback: boolean;
+  monthlyBudget: number | null;
+  expenseCount: number;
 }
 
 export interface CategoryDraft {
   name: string;
   color: string;
+  monthlyBudget: number | null;
 }

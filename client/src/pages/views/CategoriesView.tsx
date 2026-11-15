@@ -1,113 +1,167 @@
-import { Plus, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { Pencil, Plus, Trash2 } from "lucide-react";
+import { BudgetBar } from "@/components/common/BudgetBar";
 import { CategoryBadge } from "@/components/common/CategoryBadge";
+import { PageHeader } from "@/components/common/PageHeader";
+import { Skeleton } from "@/components/common/Skeleton";
+import {
+  eyebrowClass,
+  heroClass,
+  panelClass,
+  primaryButton,
+  sectionTitleClass,
+} from "@/components/common/styles";
+import { CategoryDialog } from "@/components/modals/CategoryDialog";
+import { useCategories, useDeleteCategory } from "@/hooks/useCategories";
+import { useDashboard } from "@/hooks/useReports";
 import type { Category } from "@/types/category";
-import type { Expense } from "@/types/expense";
+import { formatCurrency } from "@/utils/format";
 
-interface CategoriesViewProps {
-  categories: Category[];
-  expenses: Expense[];
-  onAdd: () => void;
-  onRemoveCategory: (id: string) => void;
-}
+export function CategoriesView() {
+  const { categories, isLoading } = useCategories();
+  const { data: dashboard } = useDashboard();
+  const remove = useDeleteCategory();
+  const [dialog, setDialog] = useState<{ open: boolean; category: Category | null }>({
+    open: false,
+    category: null,
+  });
+  const [pendingDelete, setPendingDelete] = useState<string | null>(null);
 
-export function CategoriesView({
-  categories,
-  expenses,
-  onAdd,
-  onRemoveCategory,
-}: CategoriesViewProps) {
+  const monthSpend = new Map(
+    (dashboard?.monthByCategory ?? []).map((row) => [row.categoryId, row.amount])
+  );
+
   return (
     <>
-      <header className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6">
-        <div>
-          <span className="text-[#3c5043] text-[9px] font-mono font-semibold uppercase tracking-wider">
-            Your spending vocabulary
-          </span>
-          <h1 className="mt-1 font-serif text-3xl sm:text-4xl lg:text-[42px] font-bold text-[#154734] leading-tight tracking-tight">
-            Categories
-          </h1>
-        </div>
+      <PageHeader eyebrow="Your spending vocabulary" title="Categories">
         <button
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#154734] text-[#fffaf0] text-xs font-bold shadow-md shadow-[#154734]/15 transition-all hover:bg-[#0f392a] active:scale-95 self-start sm:self-auto cursor-pointer"
-          onClick={onAdd}
+          className={`${primaryButton} self-start sm:self-auto`}
+          onClick={() => setDialog({ open: true, category: null })}
         >
           <Plus className="w-4 h-4" /> New category
         </button>
-      </header>
+      </PageHeader>
 
-      {/* Hero */}
-      <section className="relative overflow-hidden p-6 sm:p-7 mb-7 rounded-3xl border border-[#154734]/15 bg-gradient-to-br from-[#fffdf8]/95 via-[#f2ebde]/90 to-[#eae0cd]/85 shadow-lg shadow-black/5 animate-surface">
-        <span className="text-[#3c5043] text-[9px] font-mono font-semibold uppercase tracking-wider">
-          Made to flex with your life
-        </span>
+      <section className={heroClass}>
+        <span className={eyebrowClass}>Made to flex with your life</span>
         <h2 className="mt-2 mb-1.5 font-serif text-2xl sm:text-[28px] font-bold text-[#154734] tracking-tight leading-tight">
           Every expense needs a home.
         </h2>
-        <p className="m-0 max-w-md text-[#234437] text-xs sm:text-[13px] leading-relaxed font-medium">
-          Your original categories are ready. Add as many personal expense types
-          as you need.
+        <p className="m-0 max-w-md text-[#4f6858] text-xs sm:text-[13px] leading-relaxed font-medium">
+          Rename, recolour, and give any category a monthly limit. We'll show how close you are as
+          the month goes on.
         </p>
       </section>
 
-      {/* Categories grid */}
       <section>
-        <div className="flex items-center justify-between gap-3 mb-3">
-          <div>
-            <h2 className="m-0 font-serif text-xl sm:text-[22px] font-bold text-[#154734] tracking-tight">
-              Available categories
-            </h2>
-            <p className="m-0 text-[#3c5043] text-xs">
-              {categories.length} ways to organize your spending.
-            </p>
-          </div>
+        <div className="mb-3">
+          <h2 className={sectionTitleClass}>Available categories</h2>
+          <p className="m-0 text-[#606861] text-xs">
+            {categories.length} ways to organize your spending.
+          </p>
         </div>
 
-        <div className="overflow-hidden rounded-2xl border border-[#a08e73]/25 bg-[#fffdf8]/85 shadow-sm">
-          <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:[&>*:nth-child(n+3)]:border-t sm:[&>*:nth-child(odd)]:border-r border-[#eee7dc]">
-            {categories.map((category) => {
-              const entries = expenses.filter(
-                (expense) => expense.categoryId === category.id
-              ).length;
+        <div className={panelClass}>
+          {isLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-5">
+              {Array.from({ length: 6 }, (_, i) => (
+                <Skeleton key={i} className="h-16" />
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:[&>*:nth-child(n+3)]:border-t sm:[&>*:nth-child(odd)]:border-r border-[#eee7dc]">
+              {categories.map((category) => {
+                const spent = monthSpend.get(category.id) ?? 0;
+                const confirming = pendingDelete === category.id;
+                const canDelete = category.isCustom && !category.isFallback;
 
-              return (
-                <article
-                  className="p-5 flex items-start gap-3.5 hover:bg-[#fffaf2] transition-colors"
-                  key={category.id}
-                >
-                  <CategoryBadge
-                    category={category}
-                    className="grid place-items-center shrink-0 w-9 h-9 rounded-xl [&_svg]:w-4 [&_svg]:h-4"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between">
-                      <h3 className="m-0 text-[#18342a] text-xs sm:text-sm font-bold truncate">
-                        {category.name}
-                      </h3>
-                      {category.isCustom && (
-                        <button
-                          className="w-6 h-6 grid place-items-center rounded-lg text-[#825e53] hover:text-[#ad4a37] hover:bg-[#fae9e4] transition-all cursor-pointer"
-                          onClick={() => onRemoveCategory(category.id)}
-                          title="Delete custom category"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                return (
+                  <article
+                    className="p-5 flex items-start gap-3.5 hover:bg-[#fffaf2] transition-colors group"
+                    key={category.id}
+                  >
+                    <CategoryBadge
+                      category={category}
+                      className="grid place-items-center shrink-0 w-9 h-9 rounded-xl [&_svg]:w-4 [&_svg]:h-4"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <h3 className="m-0 text-[#315542] text-xs sm:text-sm font-bold truncate">
+                          {category.name}
+                          {category.isCustom && (
+                            <span className="ml-2 align-middle px-1.5 py-0.5 rounded-md bg-[#586b5d]/15 text-[#3d5c45] font-mono text-[8px] font-bold uppercase tracking-wider">
+                              Custom
+                            </span>
+                          )}
+                        </h3>
+                        <div className="flex gap-1 shrink-0">
+                          <button
+                            className="w-6 h-6 grid place-items-center rounded-lg text-[#586b5d] hover:text-[#154734] hover:bg-[#e7efe4] transition-all"
+                            onClick={() => setDialog({ open: true, category })}
+                            aria-label={`Edit ${category.name}`}
+                          >
+                            <Pencil className="w-3.5 h-3.5" />
+                          </button>
+                          {canDelete && (
+                            <button
+                              className="w-6 h-6 grid place-items-center rounded-lg text-[#805e52] hover:text-[#a94836] hover:bg-[#fae9e4] transition-all"
+                              onClick={() => setPendingDelete(category.id)}
+                              aria-label={`Delete ${category.name}`}
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                      <p className="mt-1 mb-0 text-[#5f6861] font-mono text-[10px]">
+                        {category.expenseCount} recorded item{category.expenseCount === 1 ? "" : "s"}
+                        {spent > 0 && ` · ${formatCurrency(spent)} this month`}
+                      </p>
+
+                      {category.monthlyBudget ? (
+                        <BudgetBar spent={spent} budget={category.monthlyBudget} className="mt-2.5" />
+                      ) : null}
+
+                      {confirming && (
+                        <div className="mt-3 p-2.5 rounded-xl bg-[#fbeee9] text-[#8d4430] text-[11px]">
+                          <p className="m-0 mb-2">
+                            {category.expenseCount
+                              ? `Its ${category.expenseCount} expense${category.expenseCount === 1 ? "" : "s"} will move to Other.`
+                              : "Delete this category?"}
+                          </p>
+                          <div className="flex gap-1.5">
+                            <button
+                              className="px-2 py-1 rounded-md bg-[#ece7dc] text-[#5e6860] text-[10px] font-bold"
+                              onClick={() => setPendingDelete(null)}
+                            >
+                              Keep
+                            </button>
+                            <button
+                              className="px-2 py-1 rounded-md bg-[#c4553b] text-white text-[10px] font-bold disabled:opacity-60"
+                              disabled={remove.isPending}
+                              onClick={() =>
+                                remove.mutate(category.id, { onSettled: () => setPendingDelete(null) })
+                              }
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
                       )}
                     </div>
-                    <p className="mt-1 mb-0 text-[#3c5043] font-mono text-[10px] font-medium">
-                      {entries} recorded item{entries === 1 ? "" : "s"}
-                    </p>
-                    {category.isCustom && (
-                      <span className="inline-block mt-2 px-2 py-0.5 rounded-md bg-[#6f8775]/20 text-[#154734] font-mono text-[8px] font-bold uppercase tracking-wider">
-                        Custom
-                      </span>
-                    )}
-                  </div>
-                </article>
-              );
-            })}
-          </div>
+                  </article>
+                );
+              })}
+            </div>
+          )}
         </div>
       </section>
+
+      <CategoryDialog
+        isOpen={dialog.open}
+        category={dialog.category}
+        onClose={() => setDialog({ open: false, category: null })}
+      />
     </>
   );
 }

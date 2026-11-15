@@ -109,3 +109,19 @@ export function getPeriodRange(
     },
   };
 }
+
+/** Moves a reference date by whole weeks or months for period navigation. */
+export function shiftPeriod(period: ReportPeriod, date: Date, steps: number): Date {
+  if (period === "weekly") return shiftDays(date, steps * 7);
+  return new Date(date.getFullYear(), date.getMonth() + steps, 1);
+}
+
+export function formatMonthYear(date: Date): string {
+  return new Intl.DateTimeFormat(undefined, { month: "long", year: "numeric" }).format(date);
+}
+
+export function formatRelativeDay(key: string, todayKey: string): string {
+  if (key === todayKey) return "Today";
+  if (key === dateKey(shiftDays(fromKey(todayKey), -1))) return "Yesterday";
+  return formatFullDate(fromKey(key));
+}

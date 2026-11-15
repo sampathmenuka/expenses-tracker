@@ -1,42 +1,34 @@
-import { ChartBar, ChevronRight, Download, Plus } from "lucide-react";
+import { useState } from "react";
+import { AlertTriangle, ChartBar, ChevronRight, Download, Plus } from "lucide-react";
+import { Link } from "wouter";
+import { iconButton } from "@/components/common/styles";
+import { CategoryDialog } from "@/components/modals/CategoryDialog";
+import { getCategoryById } from "@/constants/categories";
+import { useCategories } from "@/hooks/useCategories";
+import { useDashboard } from "@/hooks/useReports";
 import { CategorySummary } from "@/pages/views/CategorySummary";
-import type { Category } from "@/types/category";
-import type { Expense } from "@/types/expense";
-import type { PageTab } from "@/types/navigation";
-import { getWeekRange } from "@/utils/date";
-import { formatCurrency, sumExpenses } from "@/utils/format";
+import { exportExpensesToCSV } from "@/utils/export";
+import { formatCurrency } from "@/utils/format";
 
-interface ContextPanelProps {
-  categories: Category[];
-  expenses: Expense[];
-  onOpenCategoryDialog: () => void;
-  onSelectPage: (page: PageTab) => void;
-  onExportCSV: () => void;
-}
+export function ContextPanel() {
+  const { data } = useDashboard();
+  const { categories } = useCategories();
+  const [categoryDialog, setCategoryDialog] = useState(false);
 
-export function ContextPanel({
-  categories,
-  expenses,
-  onOpenCategoryDialog,
-  onSelectPage,
-  onExportCSV,
-}: ContextPanelProps) {
-  const { startKey, endKey } = getWeekRange();
-
-  const weekExpenses = expenses.filter(
-    (expense) => expense.date >= startKey && expense.date <= endKey
-  );
-  const weekTotal = sumExpenses(weekExpenses);
+  // Categories at or past 80% of their monthly limit deserve a heads-up.
+  const warnings = (data?.categoryBudgets ?? [])
+    .filter((b) => b.budget > 0 && b.spent / b.budget >= 0.8)
+    .sort((a, b) => b.spent / b.budget - a.spent / a.budget);
 
   return (
-    <aside className="p-7 bg-[#fffdf8]/45 border-l border-[#154734]/10 hidden xl:block">
+    <aside aria-label="At a glance" className="p-7 bg-[#fffdf8]/45 border-l border-[#154734]/10 hidden xl:block">
       <section className="flex items-center justify-between gap-2 mb-4">
         <h2 className="text-[#154734] font-serif text-[21px] tracking-tight font-bold m-0">
           At a glance
         </h2>
         <button
-          className="w-8 h-8 border border-[#ded4c5] bg-[#fffdf8] text-[#315542] rounded-xl grid place-items-center transition-all hover:bg-[#e7efe4] active:scale-95"
-          onClick={onOpenCategoryDialog}
+          className={iconButton}
+          onClick={() => setCategoryDialog(true)}
           aria-label="Add a custom category"
         >
           <Plus className="w-4 h-4" />
@@ -48,12 +40,12 @@ export function ContextPanel({
           <span className="text-[#c5d9c4] text-[9px] font-mono uppercase tracking-wider">
             This week
           </span>
-          <div className="flex justify-between items-end mt-2">
+          <div className="flex flex-wrap justify-between items-end gap-2 mt-2">
             <strong className="font-serif text-[28px] leading-none tracking-tight">
-              {formatCurrency(weekTotal)}
+              {formatCurrency(data?.weekTotal ?? 0)}
             </strong>
-            <span className="px-2 py-1 rounded-lg text-[#ecf5e9] bg-white/15 font-mono text-[9px]">
-              {weekExpenses.length} items
+            <span className="shrink-0 whitespace-nowrap px-2 py-1 rounded-lg text-[#ecf5e9] bg-white/15 font-mono text-[9px]">
+              {data?.weekCount ?? 0} items
             </span>
           </div>
         </div>
@@ -62,24 +54,48 @@ export function ContextPanel({
         </div>
       </div>
 
-      <CategorySummary categories={categories} expenses={expenses} />
+      {warnings.length > 0 && (
+        <section className="mb-4 p-4 rounded-2xl border border-[#e3b9a6] bg-[#fbeee9]">
+          <h3 className="flex items-center gap-1.5 m-0 mb-2 text-[#8d4430] text-xs font-bold">
+            <AlertTriangle className="w-3.5 h-3.5" /> Budget watch
+          </h3>
+          {warnings.map((b) => {
+            const category = getCategoryById(categories, b.categoryId);
+            const over = b.spent > b.budget;
+            return (
+              <p key={b.categoryId} className="m-0 py-1 text-[11px] text-[#7a4a3a] flex justify-between gap-2">
+                <span className="truncate font-semibold">{category.name}</span>
+                <span className="font-mono text-[10px] shrink-0">
+                  {over
+                    ? `${formatCurrency(b.spent - b.budget)} over`
+                    : `${Math.round((b.spent / b.budget) * 100)}% used`}
+                </span>
+              </p>
+            );
+          })}
+        </section>
+      )}
 
-      <button
-        className="flex items-center gap-2 w-full mt-3 p-1.5 bg-transparent text-[#154734] text-[11px] font-bold text-left transition-colors hover:text-[#0f392a]"
-        onClick={() => onSelectPage("reports")}
+      <CategorySummary />
+
+      <Link
+        href="/reports"
+        className="flex items-center gap-2 w-full mt-3 p-1.5 no-underline text-[#154734] text-[11px] font-bold transition-colors hover:text-[#0f392a]"
       >
         <ChartBar className="w-3.5 h-3.5" />
         <span>View weekly and monthly reports</span>
         <ChevronRight className="w-3.5 h-3.5 ml-auto" />
-      </button>
+      </Link>
       <button
         className="flex items-center gap-2 w-full mt-1 p-1.5 bg-transparent text-[#154734] text-[11px] font-bold text-left transition-colors hover:text-[#0f392a]"
-        onClick={onExportCSV}
+        onClick={() => exportExpensesToCSV()}
       >
         <Download className="w-3.5 h-3.5" />
         <span>Export expenses as CSV</span>
         <ChevronRight className="w-3.5 h-3.5 ml-auto" />
       </button>
+
+      <CategoryDialog isOpen={categoryDialog} onClose={() => setCategoryDialog(false)} />
     </aside>
   );
 }

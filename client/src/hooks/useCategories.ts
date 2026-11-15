@@ -1,69 +1,54 @@
-import { useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { DEFAULT_CATEGORIES } from "@/constants/categories";
-import { STORAGE_KEYS } from "@/constants/storage";
+import { api, errorMessage } from "@/lib/api";
 import type { Category, CategoryDraft } from "@/types/category";
 
+export const CATEGORIES_KEY = ["categories"] as const;
+
 export function useCategories() {
-  const [categories, setCategories] = useState<Category[]>(DEFAULT_CATEGORIES);
-  const [isHydrated, setIsHydrated] = useState(false);
+  const query = useQuery({
+    queryKey: CATEGORIES_KEY,
+    queryFn: async () => (await api.get<Category[]>("/categories")).data,
+    staleTime: 60_000,
+  });
+  return { categories: query.data ?? [], isLoading: query.isLoading };
+}
 
-  useEffect(() => {
-    try {
-      const savedCategories = localStorage.getItem(STORAGE_KEYS.CATEGORIES);
-      if (savedCategories) {
-        setCategories(JSON.parse(savedCategories));
-      }
-    } catch {
-      toast.error("Your saved categories could not be opened.");
-    } finally {
-      setIsHydrated(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (isHydrated) {
-      localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(categories));
-    }
-  }, [categories, isHydrated]);
-
-  const addCustomCategory = (draft: CategoryDraft): Category | null => {
-    const name = draft.name.trim();
-    if (!name) {
-      toast.error("Give this expense type a name.");
-      return null;
-    }
-    if (
-      categories.some(
-        (category) => category.name.toLowerCase() === name.toLowerCase()
-      )
-    ) {
-      toast.error("That category already exists.");
-      return null;
-    }
-
-    const newCategory: Category = {
-      id: `custom-${crypto.randomUUID()}`,
-      name,
-      color: draft.color,
-      icon: "custom",
-      isCustom: true,
-    };
-
-    setCategories((current) => [...current, newCategory]);
-    toast.success(`${name} is ready to use.`);
-    return newCategory;
+function useInvalidateAfterCategoryChange() {
+  const queryClient = useQueryClient();
+  return () => {
+    queryClient.invalidateQueries({ queryKey: CATEGORIES_KEY });
+    queryClient.invalidateQueries({ queryKey: ["reports"] });
   };
+}
 
-  const removeCategory = (id: string): void => {
-    setCategories((current) => current.filter((c) => c.id !== id));
-    toast.success("Custom category removed.");
-  };
+export function useSaveCategory() {
+  const invalidate = useInvalidateAfterCategoryChange();
+  return useMutation({
+    mutationFn: async ({ id, draft }: { id?: string; draft: CategoryDraft }) => {
+      const { data } = id
+        ? await api.patch<Category>(`/categories/${id}`, draft)
+        : await api.post<Category>("/categories", draft);
+      return data;
+    },
+    onSuccess: (category, { id }) => {
+      invalidate();
+      toast.success(id ? `${category.name} updated.` : `${category.name} is ready to use.`);
+    },
+    onError: (error) => toast.error(errorMessage(error)),
+  });
+}
 
-  return {
-    categories,
-    isHydrated,
-    addCustomCategory,
-    removeCategory,
-  };
+export function useDeleteCategory() {
+  const queryClient = useQueryClient();
+  const invalidate = useInvalidateAfterCategoryChange();
+  return useMutation({
+    mutationFn: (id: string) => api.delete(`/categories/${id}`),
+    onSuccess: () => {
+      invalidate();
+      queryClient.invalidateQueries({ queryKey: ["expenses"] });
+      toast.success("Category removed. Its expenses moved to Other.");
+    },
+    onError: (error) => toast.error(errorMessage(error)),
+  });
 }
